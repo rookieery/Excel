@@ -28,7 +28,6 @@ var resizeSs = document.getElementsByClassName('resizeS');
 var divElement = document.getElementsByClassName('divElement')[0];
 //小框框
 var fixDivElement = document.getElementsByClassName('fixDivElement')[0];
-//保存大框框的两个对角cell
 var divStatus = [];
 divStatus[0] = cells[0];
 divStatus[1] = cells[0];
