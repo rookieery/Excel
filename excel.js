@@ -215,6 +215,7 @@ function addHandler(e) {
     if (headerChange == null) { // insert row
         var index = Number(rowHeaderChange.innerText);
         var row = table.insertRow(index);
+        table.style.height = table.getBoundingClientRect().height + row.getBoundingClientRect().height + 'px';
         var rowHeader = row.insertCell(0);
         appendRowHeader(rowHeader, index);
         for (var i = 1; i <= headers.length; i++) {
@@ -231,6 +232,9 @@ function addHandler(e) {
         var rows = table.rows;
         var index = headerChange.innerText;
         var clickHeader;
+        var cellMinWidth = window.getComputedStyle(cells[0], null).getPropertyValue("min-width");
+        var minWidth = cellMinWidth.substring(0, cellMinWidth.length - 2);
+        table.style.width = table.getBoundingClientRect().width + Number(minWidth) + 'px';
         for (var i = 0; i < rows.length; i++) {
             if (i == 0) { // insert th
                 clickHeader = appendTh(rows, index);
@@ -278,6 +282,7 @@ function appendTh(rows, index) {
     var headChildren = rows[0].children;
     var headLength = headChildren.length;
     var firstInsert = false;
+    // String.fromCharCode(index.charCodeAt()-1)
     for (var j = 1; j <= headLength; j++) {
         if (headChildren[j].innerText == index && !firstInsert) {
             clickHeader = headChildren[j];
@@ -308,8 +313,12 @@ function appendTd(rows, index, i) {
 }
 
 function removeHandler(e) {
+    var rows = table.rows;
     if (headerChange == null) {// remove row
         var index = rowHeaderChange.innerText;
+        if (Number(index) === rows.length - 1) {
+            return;
+        }
         var deleteHeight = rowHeaderChange.tagName == 'SPAN' ? rowHeaderChange.parentElement.getBoundingClientRect().height : rowHeaderChange.getBoundingClientRect().height;
         table.style.height = table.getBoundingClientRect().height - deleteHeight + 'px';
         table.deleteRow(index);
@@ -317,8 +326,10 @@ function removeHandler(e) {
         rowHeader.click();
         rowHeaderChange = null;
     } else {// remove column
-        var rows = table.rows;
         var index = headerChange.innerText;
+        if (index.charCodeAt() - 'A'.charCodeAt() == rows.length - 2) {
+            return;
+        }
         var deleteWidth = headerChange.tagName == 'SPAN' ? headerChange.parentElement.getBoundingClientRect().width : headerChange.getBoundingClientRect().width;
         table.style.width = table.getBoundingClientRect().width - deleteWidth + 'px';
         var clickHeader;
