@@ -24,9 +24,9 @@ var addButton = document.getElementsByClassName('add')[0];
 var removeButton = document.getElementsByClassName('remove')[0];
 var resizeEs = document.getElementsByClassName('resizeE');
 var resizeSs = document.getElementsByClassName('resizeS');
-//大框框
+// large frame
 var divElement = document.getElementsByClassName('divElement')[0];
-//小框框
+// small frame
 var fixDivElement = document.getElementsByClassName('fixDivElement')[0];
 var divStatus = [];
 divStatus[0] = cells[0];
@@ -67,7 +67,7 @@ function rowHeaderEvent(rowHeader) {
     rowHeader.addEventListener('contextmenu', rowHeaderMenuHandler, false);
     rowHeader.addEventListener('mouseup', rowHeaderUpHandler, false);
 }
-//全篇最神奇的函数  绘制大框框
+// The most amazing function  Draw big frame
 function changeDiv() {
     divElement.style.height = Math.max(divStatus[1].getBoundingClientRect().bottom - divStatus[0].getBoundingClientRect().top, divStatus[0].getBoundingClientRect().bottom - divStatus[1].getBoundingClientRect().top) + 'px';
     divElement.style.width = Math.max(divStatus[1].getBoundingClientRect().right - divStatus[0].getBoundingClientRect().left, divStatus[0].getBoundingClientRect().right - divStatus[1].getBoundingClientRect().left) + 'px';
@@ -76,7 +76,7 @@ function changeDiv() {
     changeFixDiv();
     fixDivText(divStatus[0]);
 }
-//绘制小框框
+// Draw small frame
 function changeFixDiv() {
     fixDivElement.style.width = divStatus[0].getBoundingClientRect().width - 4 + 'px';
     fixDivElement.style.height = divStatus[0].getBoundingClientRect().height - 4 + 'px';
@@ -212,7 +212,7 @@ function displayButton(headChange) {
 }
 
 function addHandler(e) {
-    if (headerChange == null) { //插入行
+    if (headerChange == null) { // insert row
         var index = Number(rowHeaderChange.innerText);
         var row = table.insertRow(index);
         var rowHeader = row.insertCell(0);
@@ -227,14 +227,14 @@ function addHandler(e) {
         }
         rowHeader.click();
         rowHeaderChange = null;
-    } else { //插入列
+    } else { // insert column
         var rows = table.rows;
         var index = headerChange.innerText;
         var clickHeader;
         for (var i = 0; i < rows.length; i++) {
-            if (i == 0) { //插入th
+            if (i == 0) { // insert th
                 clickHeader = appendTh(rows, index);
-            } else { //插入td
+            } else { // insert td
                 appendTd(rows, index, i);
             }
         }
@@ -308,7 +308,7 @@ function appendTd(rows, index, i) {
 }
 
 function removeHandler(e) {
-    if (headerChange == null) {//删除行
+    if (headerChange == null) {// remove row
         var index = rowHeaderChange.innerText;
         var deleteHeight = rowHeaderChange.tagName == 'SPAN' ? rowHeaderChange.parentElement.getBoundingClientRect().height : rowHeaderChange.getBoundingClientRect().height;
         table.style.height = table.getBoundingClientRect().height - deleteHeight + 'px';
@@ -316,16 +316,16 @@ function removeHandler(e) {
         var rowHeader = removeRowHeader(Number(index));
         rowHeader.click();
         rowHeaderChange = null;
-    } else {//删除列
+    } else {// remove column
         var rows = table.rows;
         var index = headerChange.innerText;
         var deleteWidth = headerChange.tagName == 'SPAN' ? headerChange.parentElement.getBoundingClientRect().width : headerChange.getBoundingClientRect().width;
         table.style.width = table.getBoundingClientRect().width - deleteWidth + 'px';
         var clickHeader;
         for (var i = 0; i < rows.length; i++) {
-            if (i == 0) {//删除th
+            if (i == 0) {// remove th
                 clickHeader = removeTh(rows, index);
-            } else {//删除td
+            } else {// remove td
                 removeTd(rows, index, i);
             }
         }
@@ -355,8 +355,8 @@ function removeTh(rows, index) {
             clickHeader = headChildren[j + 1];
             rows[0].removeChild(headChildren[j]);
         }
-        if (headChildren[j].innerText > index) {
-            headChildren[j].children[0].innerText = String.fromCharCode(headChildren[j - 1].children[0].innerText.charCodeAt() + 1);
+        if (headChildren[j].innerText >= index) {
+            headChildren[j].children[0].innerText = String.fromCharCode(headChildren[j].children[0].innerText.charCodeAt() - 1);
         }
     }
     return clickHeader;
@@ -368,8 +368,8 @@ function removeTd(rows, index, i) {
         if (rowsChildren[j].getAttribute('data-index') == index) {
             rows[i].deleteCell(j);
         }
-        if (rowsChildren[j].getAttribute('data-index') > index) {
-            rowsChildren[j].setAttribute('data-index', String.fromCharCode(rowsChildren[j - 1].getAttribute('data-index').charCodeAt() + 1));
+        if (rowsChildren[j].getAttribute('data-index') >= index) {
+            rowsChildren[j].setAttribute('data-index', String.fromCharCode(rowsChildren[j].getAttribute('data-index').charCodeAt() - 1));
         }
     }
 }
@@ -430,10 +430,9 @@ function rowHeaderHandler(e) {
     divStatus[1] = targetRow[targetRow.length - 1];
     changeDiv();
 }
-//设置大框框相邻的头顶的元素样式
+// Set the style of the element above the large frame
 function setHeadsOne(index, heads, clearBorderName) {
     for (var i = 0; i < heads.length; i++) {
-        //每次都需要判断删除，有没有什么其他妙招？？？
         if (heads[i].classList.contains('active')) {
             heads[i].classList.remove('active');
         }
@@ -447,7 +446,7 @@ function setHeadsOne(index, heads, clearBorderName) {
         heads[i].classList.remove('selected');
     }
 }
-//设置与大框框平行的最边缘的一排元素的样式
+// Set styles the row of elements on the outermost edge parallel to the large frame
 function setHeadsTwo(clearBorderBottom, heads, borderName) {
     for (var i = 0; i < heads.length; i++) {
         heads[i].classList.add('selected');
@@ -461,7 +460,7 @@ function setHeadsTwo(clearBorderBottom, heads, borderName) {
         }
     }
 }
-//设置与大框框两边平行的最边缘的单个样式属性
+// Set the single-most edge style property parallel to the sides of the large frame
 function setHeadsThree(index, rowHeader, heads) {
     for (var i = 0; i < heads.length; i++) {
         if (heads[i].classList.contains('active')) {
@@ -511,7 +510,7 @@ function dblCellHandler(e) {
     inputElement.addEventListener('keyup', function (event) {
         if (event.keyCode == 13) {
             cellText(cell, inputElement.value);
-            //手动触发下一个cell的点击事件
+            // Manually trigger the click event of the next cell
             cellNext.click();
             inputElement.blur();
         }
@@ -568,16 +567,16 @@ function drawRect() {
     var startTop = divStatus[0].getBoundingClientRect().top;
     var endLeft = divStatus[1].getBoundingClientRect().left;
     var endTop = divStatus[1].getBoundingClientRect().top;
-    if (endTop <= startTop) {//上
+    if (endTop <= startTop) {// top
         moveChangeRowHeader(startTop, endTop, rowHeaderBorder);
     }
-    if (endTop > startTop) {//下
+    if (endTop > startTop) {// bottom
         moveChangeRowHeader(endTop, startTop, rowHeaderBorder);
     }
-    if (endLeft <= startLeft) {//左
+    if (endLeft <= startLeft) {// left
         moveChangeHeader(startLeft, endLeft, headerBorder);
     }
-    if (endLeft > startLeft) {//右
+    if (endLeft > startLeft) {// right
         moveChangeHeader(endLeft, startLeft, headerBorder);
     }
     changeDiv();
