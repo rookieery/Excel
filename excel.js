@@ -13,8 +13,6 @@ var rowHeaderChange = null;
 var EDivHeader = null;
 var SDivHeader = null;
 var head = document.getElementsByClassName('head')[0];
-var tableX = head.clientWidth;
-var length = head.cells.length;
 var table = document.getElementsByClassName('table')[0];
 var cells = document.getElementsByClassName('cell');
 var headers = document.getElementsByClassName('header');
@@ -264,7 +262,7 @@ function appendCells(row, index, i) {
     cell.setAttribute('data-index', index);
     cellEvent(cell);
 }
-function appendHeader(rows, index) {
+function appendHeader(rows, index, headChild) {
     var header = document.createElement('th');
     header.classList.add('header');
     var resizeE = document.createElement('div');
@@ -274,7 +272,7 @@ function appendHeader(rows, index) {
     header.appendChild(resizeE);
     header.children[0].innerText = index;
     resizeE.addEventListener('mousedown', resizeEsDownHandler, false);
-    rows[0].appendChild(header);
+    rows[0].insertBefore(header, headChild);
     headerEvent(header);
 }
 function appendTh(rows, index) {
@@ -282,11 +280,10 @@ function appendTh(rows, index) {
     var headChildren = rows[0].children;
     var headLength = headChildren.length;
     var firstInsert = false;
-    // String.fromCharCode(index.charCodeAt()-1)
     for (var j = 1; j <= headLength; j++) {
         if (headChildren[j].innerText == index && !firstInsert) {
+            appendHeader(rows, index, headChildren[j]);
             clickHeader = headChildren[j];
-            appendHeader(rows, index);
             firstInsert = true;
         } else {
             if (firstInsert) {
@@ -327,7 +324,7 @@ function removeHandler(e) {
         rowHeaderChange = null;
     } else {// remove column
         var index = headerChange.innerText;
-        if (index.charCodeAt() - 'A'.charCodeAt() == rows.length - 2) {
+        if (index.charCodeAt() - 'A'.charCodeAt() == headers.length - 1) {
             return;
         }
         var deleteWidth = headerChange.tagName == 'SPAN' ? headerChange.parentElement.getBoundingClientRect().width : headerChange.getBoundingClientRect().width;
