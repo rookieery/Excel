@@ -1,8 +1,14 @@
 import resizeEsDownHandler from './resizeEsDivEvent.js';
 
-import constants from './constant.js';
+import displayButton from './button.js';
 
-import context from './context.js';
+import { setHeadsOne, setHeadsTwo } from './setHead.js';
+
+import constants from '../common/constant.js';
+
+import variable from '../common/variable.js';
+
+import { hidden, changeDiv } from '../common/function.js';
 
 function getDivStatus(row, index) {
   for (let i = 1; i < row.length; i++) {
@@ -26,8 +32,8 @@ function headerHandler(e) {
     constants.both.classList.remove('active');
   }
   const { rows } = constants.table;
-  (context.divStatus)[0] = getDivStatus((rows)[1].children, index);
-  (context.divStatus)[1] = getDivStatus((rows)[rows.length - 1].children, index);
+  (variable.divStatus)[0] = getDivStatus((rows)[1].children, index);
+  (variable.divStatus)[1] = getDivStatus((rows)[rows.length - 1].children, index);
   changeDiv();
 }
 
@@ -41,8 +47,8 @@ function headerUpHandler(e) {
     return;
   }
   if (e.button === 2) {
-    headerChange = e.srcElement;
-    displayButton(headerChange); // button class
+    variable.headerChange = e.srcElement;
+    displayButton(variable.headerChange);
   }
 }
 

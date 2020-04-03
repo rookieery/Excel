@@ -1,6 +1,8 @@
-import context from './context.js';
+import variable from '../common/variable.js';
 
-import constants from './constant.js';
+import constants from '../common/constant.js';
+
+import { hidden, changeDiv } from '../common/function.js';
 
 let downScreenX = 0;
 let newMoveScreenX = 0;
@@ -26,8 +28,8 @@ function resizeEsUpHandler() {
   changeDiv();
   constants.divElement.style.visibility = 'visible';
   constants.fixDivElement.style.visibility = 'visible';
-  if (context.startCellFlag) {
-    context.startCellFlag = false;
+  if (variable.startCellFlag) {
+    variable.startCellFlag = false;
   }
   if (startResizeEsFlag) {
     startResizeEsFlag = false;
