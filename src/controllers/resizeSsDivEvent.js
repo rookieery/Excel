@@ -1,8 +1,8 @@
-import variable from '../common/variable.js';
+import variable from '../utils/variable.js';
 
-import constants from '../common/constant.js';
+import domConstants from '../utils/domConstant.js';
 
-import { hidden, changeDiv } from '../common/function.js';
+import { hidden, changeDiv } from '../views/divView.js';
 
 let downScreenY = 0;
 let newMoveScreenY = 0;
@@ -13,21 +13,21 @@ function resizeSsMoveHandler(e) {
   if (startResizeSsFlag) {
     newMoveScreenY = e.screenY;
     const headerHeight = SDivHeader.getClientRects()[0].height;
-    const tableHeight = constants.table.getClientRects()[0].height;
+    const tableHeight = domConstants.table.getClientRects()[0].height;
     if (oldMoveScreenY === 0) {
       oldMoveScreenY = downScreenY;
     }
     const changedSDiv = headerHeight + (newMoveScreenY - oldMoveScreenY);
     SDivHeader.style.height = changedSDiv < 25 ? `${25}px` : `${changedSDiv}px`;
-    constants.table.style.height = changedSDiv < 25 ? `${tableHeight}px` : `${tableHeight + (newMoveScreenY - oldMoveScreenY)}px`;
+    domConstants.table.style.height = changedSDiv < 25 ? `${tableHeight}px` : `${tableHeight + (newMoveScreenY - oldMoveScreenY)}px`;
     oldMoveScreenY = newMoveScreenY;
   }
 }
 
 function resizeSsUpHandler() {
   changeDiv();
-  constants.divElement.style.visibility = 'visible';
-  constants.fixDivElement.style.visibility = 'visible';
+  domConstants.divElement.style.visibility = 'visible';
+  domConstants.fixDivElement.style.visibility = 'visible';
   if (variable.startCellFlag) {
     variable.startCellFlag = false;
   }
@@ -49,6 +49,6 @@ export default function resizeSsDownHandler(e) {
   SDivHeader = e.srcElement.parentElement.parentElement;
   startResizeSsFlag = true;
   downScreenY = e.screenY;
-  constants.divElement.style.visibility = 'hidden';
-  constants.fixDivElement.style.visibility = 'hidden';
+  domConstants.divElement.style.visibility = 'hidden';
+  domConstants.fixDivElement.style.visibility = 'hidden';
 }

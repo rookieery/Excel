@@ -96,7 +96,7 @@ a{
     background-color: rgb(137, 202, 124) !important;
     cursor: s-resize !important;
 }
-.both{
+.corner{
     min-width: 36px;
     min-height: 26px;
     max-width: 36px;

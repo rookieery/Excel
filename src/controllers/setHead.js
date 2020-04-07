@@ -19,3 +19,16 @@ export function setHeadsTwo(heads) {
     heads[i].classList.add('selected');
   }
 }
+
+export function setHeadsThree(index, rowHeader, heads) {
+  for (let i = 0; i < heads.length; i++) {
+    if (heads[i].classList.contains('active')) {
+      heads[i].classList.remove('active');
+    }
+    if (heads[i] === rowHeader || heads[i].innerText === index) {
+      heads[i].classList.add('selected');
+    } else if (heads[i].classList.contains('selected')) {
+      heads[i].classList.remove('selected');
+    }
+  }
+}

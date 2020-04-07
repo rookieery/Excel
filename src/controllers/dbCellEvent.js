@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
-import constants from '../common/constant.js';
+import domConstants from '../utils/domConstant.js';
 
-import { hidden } from '../common/function.js';
+import { hidden } from '../views/divView.js';
 
 function appendInput(inputElement, rows, rect) {
   inputElement.style.width = `${rows[0].getClientRects()[0].width}px`;
@@ -12,14 +12,14 @@ function appendInput(inputElement, rows, rect) {
   inputElement.style.left = `${rect.left}px`;
   inputElement.style.outline = 'none';
   inputElement.style.zIndex = '3';
-  constants.table.appendChild(inputElement);
+  domConstants.table.appendChild(inputElement);
   inputElement.focus();
 }
 
 function getCellNext(rowHeader, cell) {
-  for (let i = 0; i < constants.rowHeaders.length; i++) {
-    if ((constants.rowHeaders)[i].innerText - 1 === rowHeader.innerText) {
-      const parent = (constants.rowHeaders)[i].parentElement;
+  for (let i = 0; i < domConstants.rowHeaders.length; i++) {
+    if ((domConstants.rowHeaders)[i].innerText - 1 === rowHeader.innerText) {
+      const parent = (domConstants.rowHeaders)[i].parentElement;
       const { children } = parent;
       for (let j = 0; j < children.length; j++) {
         if (children[j].getAttribute('data-index') === cell.getAttribute('data-index')) {
@@ -28,7 +28,7 @@ function getCellNext(rowHeader, cell) {
       }
     }
   }
-  return (constants.cells)[0];
+  return (domConstants.cells)[0];
 }
 function cellText(cell, text) {
   cell.innerText = text;
@@ -41,8 +41,8 @@ function cellText(cell, text) {
 export default function dblCellHandler(e) {
   hidden();
   const rows = [e.srcElement, e.srcElement.parentElement];
-  constants.fixDivElement.style.top = `${e.srcElement.getBoundingClientRect().top + 1.5}px`;
-  constants.fixDivElement.style.left = `${e.srcElement.getBoundingClientRect().left + 1.5}px`;
+  domConstants.fixDivElement.style.top = `${e.srcElement.getBoundingClientRect().top + 1.5}px`;
+  domConstants.fixDivElement.style.left = `${e.srcElement.getBoundingClientRect().left + 1.5}px`;
   const rect = e.srcElement.getBoundingClientRect();
   const inputElement = document.createElement('input');
   setTimeout(() => {
@@ -65,6 +65,6 @@ export default function dblCellHandler(e) {
   }, false);
   inputElement.addEventListener('blur', () => {
     cellText(cell, inputElement.value);
-    constants.table.removeChild(inputElement);
+    domConstants.table.removeChild(inputElement);
   }, false);
 }

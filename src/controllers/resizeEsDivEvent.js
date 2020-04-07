@@ -1,8 +1,8 @@
-import variable from '../common/variable.js';
+import variable from '../utils/variable.js';
 
-import constants from '../common/constant.js';
+import domConstants from '../utils/domConstant.js';
 
-import { hidden, changeDiv } from '../common/function.js';
+import { hidden, changeDiv } from '../views/divView.js';
 
 let downScreenX = 0;
 let newMoveScreenX = 0;
@@ -13,21 +13,21 @@ function resizeEsMoveHandler(e) {
   if (startResizeEsFlag) {
     newMoveScreenX = e.screenX;
     const headerWidth = EDivHeader.getClientRects()[0].width;
-    const tableWidth = constants.table.getClientRects()[0].width;
+    const tableWidth = domConstants.table.getClientRects()[0].width;
     if (oldMoveScreenX === 0) {
       oldMoveScreenX = downScreenX;
     }
     const changedEDiv = headerWidth + (newMoveScreenX - oldMoveScreenX);
     EDivHeader.style.width = changedEDiv < 64 ? `${64}px` : `${changedEDiv}px`;
-    constants.table.style.width = changedEDiv < 64 ? `${tableWidth}px` : `${tableWidth + (newMoveScreenX - oldMoveScreenX)}px`;
+    domConstants.table.style.width = changedEDiv < 64 ? `${tableWidth}px` : `${tableWidth + (newMoveScreenX - oldMoveScreenX)}px`;
     oldMoveScreenX = newMoveScreenX;
   }
 }
 
 function resizeEsUpHandler() {
   changeDiv();
-  constants.divElement.style.visibility = 'visible';
-  constants.fixDivElement.style.visibility = 'visible';
+  domConstants.divElement.style.visibility = 'visible';
+  domConstants.fixDivElement.style.visibility = 'visible';
   if (variable.startCellFlag) {
     variable.startCellFlag = false;
   }
@@ -49,6 +49,6 @@ export default function resizeEsDownHandler(e) {
   EDivHeader = e.srcElement.parentElement;
   startResizeEsFlag = true;
   downScreenX = e.screenX;
-  constants.divElement.style.visibility = 'hidden';
-  constants.fixDivElement.style.visibility = 'hidden';
+  domConstants.divElement.style.visibility = 'hidden';
+  domConstants.fixDivElement.style.visibility = 'hidden';
 }

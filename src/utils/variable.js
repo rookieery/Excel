@@ -4,6 +4,7 @@ class Variable {
     this.divStatus = [];
     this.headerChange = null;
     this.rowHeaderChange = null;
+    this.selectedCount = 0;
   }
 }
 const variable = new Variable();
