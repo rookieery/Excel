@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import domConstants from '../utils/domConstant.js';
+import domConstants from '../views/domConstant.js';
 
 import { hidden } from '../views/divView.js';
 

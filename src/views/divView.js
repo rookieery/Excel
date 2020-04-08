@@ -1,6 +1,6 @@
 import variable from '../utils/variable.js';
 
-import domConstants from '../utils/domConstant.js';
+import domConstants from './domConstant.js';
 
 export function hidden() {
   domConstants.addButton.style.visibility = 'hidden';

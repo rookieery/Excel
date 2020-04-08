@@ -5,6 +5,7 @@ import Cell from './models/cell.js';
 import { changeDiv } from './views/divView.js';
 import domConstants, { refresh } from './utils/domConstant.js';
 import variable from './utils/variable.js';
+import Frame from './models/frame.js';
 
 
 export default function createTable() {
@@ -12,12 +13,7 @@ export default function createTable() {
   const table = document.createElement('table');
   table.classList.add('table');
   body.appendChild(table);
-  const divElement = document.createElement('div');
-  divElement.classList.add('divElement');
-  const fixDivElement = document.createElement('div');
-  fixDivElement.classList.add('fixDivElement');
-  divElement.appendChild(fixDivElement);
-  table.appendChild(divElement);
+  table.appendChild(new Frame().createFrame());
   const trFirst = document.createElement('tr');
   trFirst.appendChild(createBoth());
   for (let i = 0; i < 10; i++) {

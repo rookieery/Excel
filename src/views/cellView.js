@@ -1,4 +1,4 @@
-import domConstants from '../utils/domConstant.js';
+import domConstants from './domConstant.js';
 
 import variable from '../utils/variable.js';
 
