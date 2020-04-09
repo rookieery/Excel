@@ -36,7 +36,7 @@ a{
 .remove:hover{
     background-color: #c90707;
 }
-.divElement {
+.bigFrame {
     position: fixed;
     transition-property: all;
     transition-duration: 0.2s;
@@ -45,7 +45,7 @@ a{
     background-color: rgba(83, 83, 83, 0.3);
     z-index: 1;
 }
-.fixDivElement{
+.smallFrame{
     position: fixed;
     transition-property: all;
     transition-duration: 0.2s;
@@ -62,9 +62,8 @@ a{
     border-collapse:collapse;
 }
 
-.header {
+.colHeader {
     position: relative;
-    min-width: 64px;
     line-height: 25px;
     min-height: 25px;
     max-height: 25px;
@@ -92,7 +91,7 @@ a{
     left:0;
     z-index: 10;
 }
-.header:hover{
+.colHeader:hover{
     background-color: rgb(137, 202, 124) !important;
     cursor: s-resize !important;
 }
@@ -108,8 +107,6 @@ a{
 }
 
 .cell{
-    min-width: 64px;
-    min-height: 25px;
     line-height: 25px;
     position: relative;
     text-align: left;
@@ -120,7 +117,6 @@ a{
     position: relative;
     min-width: 36px;
     max-width: 36px;
-    min-height: 25px;
     line-height: 25px;
     text-align: center;
     font-size: 14px;
@@ -136,7 +132,7 @@ a{
     background-color: rgb(185, 185, 185);
 }
 
-.header.selected {
+.colHeader.selected {
     border-bottom-color: rgb(21, 104, 10);
 }
 

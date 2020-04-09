@@ -1,8 +1,8 @@
-import createTable from './initTable.js';
+import initSheet from './controllers/initController.js';
 
 class Main {
   static start() {
-    createTable();
+    initSheet();
   }
 }
 

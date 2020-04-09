@@ -2,7 +2,8 @@ import Coordinate from './coordinate.js';
 
 export default class SelectRange {
   constructor() {
-    this.selectType = '';
-    this.selectPosition = [new Coordinate(0, 0), new Coordinate(0, 0)];
+    this.selectType = 'cell';
+    this.selectUpperLeftCoordinate = new Coordinate(0, 0);
+    this.selectBottomRightCoordinate = new Coordinate(0, 0);
   }
 }
