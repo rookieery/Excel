@@ -39,7 +39,7 @@ a{
 .bigFrame {
     position: fixed;
     transition-property: all;
-    transition-duration: 0.2s;
+    transition-duration: 0.16s;
     pointer-events: none;
     border: 1.5px solid rgb(21, 104, 10);
     background-color: rgba(83, 83, 83, 0.3);
@@ -48,18 +48,21 @@ a{
 .smallFrame{
     position: fixed;
     transition-property: all;
-    transition-duration: 0.2s;
+    transition-duration: 0.16s;
     pointer-events: none;
     border: none;
     background-color: white;
+    font-size: small;
     z-index: 2;
     text-align: right;
+    overflow: hidden;
 }
 .table{
     margin: 0;
     cursor: cell;
     position: relative;
     border-collapse:collapse;
+    table-layout: fixed;
 }
 
 .colHeader {
@@ -76,18 +79,18 @@ a{
 .resizeE {
     position: absolute;
     cursor: e-resize;
-    width: 16px;
+    width: 12px;
     height: 100%;
-    right: -8px;
+    right: -6px;
     top:0;
     z-index: 10;
 }
 .resizeS{
     position: absolute;
     cursor: s-resize;
-    height: 10px;
+    height: 8px;
     width: 100%;
-    bottom: -5px;
+    bottom: -4px;
     left:0;
     z-index: 10;
 }
@@ -111,6 +114,7 @@ a{
     position: relative;
     text-align: left;
     border: 1px solid rgb(194, 194, 194);
+    font-size: small;
     overflow: visible;
 }
 .rowHeader {

@@ -50,6 +50,11 @@ export default class Sheet {
   }
 
   changeSelectRange(selectType, startColIndex, startRowIndex, endColIndex, endRowIndex, activeCellColIndex, activeCellRowIndex) {
+    if (this.selectRange.equal(selectType, startColIndex, startRowIndex, endColIndex, endRowIndex)
+      && this.activeCellCoordinate.colIndex === activeCellColIndex && this.activeCellCoordinate.rowIndex === activeCellRowIndex) {
+      this.onDataChange({ result: false });
+      return;
+    }
     this.selectRange.selectType = selectType;
     this.selectRange.selectUpperLeftCoordinate.colIndex = startColIndex;
     this.selectRange.selectUpperLeftCoordinate.rowIndex = startRowIndex;
@@ -57,7 +62,7 @@ export default class Sheet {
     this.selectRange.selectBottomRightCoordinate.rowIndex = endRowIndex;
     this.activeCellCoordinate.colIndex = activeCellColIndex;
     this.activeCellCoordinate.rowIndex = activeCellRowIndex;
-    this.onDataChange({ type: selectType });
+    this.onDataChange({ result: true });
   }
 
   updateCellText(colIndex, rowIndex, text) {
