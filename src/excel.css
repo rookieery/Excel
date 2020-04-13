@@ -37,7 +37,7 @@ a{
     background-color: #c90707;
 }
 .bigFrame {
-    position: fixed;
+    position: absolute;
     transition-property: all;
     transition-duration: 0.16s;
     pointer-events: none;
@@ -46,7 +46,7 @@ a{
     z-index: 1;
 }
 .smallFrame{
-    position: fixed;
+    position: absolute;
     transition-property: all;
     transition-duration: 0.16s;
     pointer-events: none;
@@ -112,10 +112,10 @@ a{
 .cell{
     line-height: 25px;
     position: relative;
-    text-align: left;
+    text-align: right;
     border: 1px solid rgb(194, 194, 194);
     font-size: small;
-    overflow: visible;
+    overflow: hidden;
 }
 .rowHeader {
     position: relative;

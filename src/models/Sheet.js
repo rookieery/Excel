@@ -31,9 +31,9 @@ export default class Sheet {
     for (let i = 0; i < colCount; i++) {
       this.colHeaders.push(new ColHeader(String.fromCharCode('A'.charCodeAt() + i)));
     }
-    for (let i = 0; i < colCount; i++) {
+    for (let i = 0; i < rowCount; i++) {
       this.cells[i] = [];
-      for (let j = 0; j < rowCount; j++) {
+      for (let j = 0; j < colCount; j++) {
         this.cells[i].push(new Cell());
       }
     }
@@ -68,7 +68,7 @@ export default class Sheet {
   updateCellText(colIndex, rowIndex, text) {
     this.activeCellCoordinate.colIndex = colIndex;
     this.activeCellCoordinate.rowIndex = rowIndex;
-    this.cells[colIndex][rowIndex].text = text;
+    this.cells[rowIndex][colIndex].text = text;
     this.boundaryCellCoordinate.colIndex = Math.max(this.boundaryCellCoordinate.colIndex, colIndex);
     this.boundaryCellCoordinate.rowIndex = Math.max(this.boundaryCellCoordinate.rowIndex, rowIndex);
   }
@@ -139,18 +139,32 @@ export default class Sheet {
     if (index <= this.boundaryCellCoordinate.rowIndex) {
       this.boundaryCellCoordinate.rowIndex += count;
     }
+    const height = index === 0 ? 25 : this.rowHeaders[index - 1].height;
     for (let i = 0; i < count; i++) {
       this.cells.splice(index, 0, this.createRow());
       this.cells.pop();
-      this.rowHeaders.splice(index, 0, new RowHeader('1'));
+      const newHeader = new RowHeader('1');
+      newHeader.height = height;
+      this.rowHeaders.splice(index, 0, newHeader);
       this.rowHeaders.pop();
     }
     this.resetRowText();
   }
 
-  getNewRowIndex(index) {
-    for (let j = index - 1; j >= 0; j--) {
-      for (let i = 0; i < this.colHeaders.length; i++) {
+  getNewRowRowIndex(index) {
+    for (let i = index - 1; i >= 0; i--) {
+      for (let j = 0; j < this.colHeaders.length; j++) {
+        if (this.cells[i][j].text !== '') {
+          return i;
+        }
+      }
+    }
+    return -1;
+  }
+
+  getNewRowColIndex(index) {
+    for (let j = this.colHeaders.length - 1; j >= 0; j--) {
+      for (let i = 0; i < index; i++) {
         if (this.cells[i][j].text !== '') {
           return j;
         }
@@ -161,8 +175,8 @@ export default class Sheet {
 
   removeRows(index, count) {
     if (this.boundaryCellCoordinate.rowIndex >= index && this.boundaryCellCoordinate.rowIndex < index + count) {
-      this.boundaryCellCoordinate.rowIndex = this.getNewRowIndex(index);
-      this.boundaryCellCoordinate.colIndex = this.getNewColIndex(index);
+      this.boundaryCellCoordinate.rowIndex = this.getNewRowRowIndex(index);
+      this.boundaryCellCoordinate.colIndex = this.getNewRowColIndex(index);
     }
     for (let i = 0; i < count; i++) {
       this.cells.splice(index, 1);
@@ -186,22 +200,36 @@ export default class Sheet {
     if (index <= this.boundaryCellCoordinate.colIndex) {
       this.boundaryCellCoordinate.colIndex += count;
     }
+    const width = index === 0 ? 64 : this.colHeaders[index - 1].width;
     for (let i = 0; i < count; i++) {
       for (let j = 0; j < this.rowHeaders.length; j++) {
         this.cells[j].splice(index, 0, new Cell());
         this.cells[j].pop();
       }
-      this.colHeaders.splice(index, 0, new ColHeader('A'));
+      const newColHeader = new ColHeader('A');
+      newColHeader.width = width;
+      this.colHeaders.splice(index, 0, newColHeader);
       this.colHeaders.pop();
     }
     this.resetColText();
   }
 
-  getNewColIndex(index) {
-    for (let i = index - 1; i >= 0; i--) {
-      for (let j = 0; j < this.removeRows.length; j++) {
+  getNewColRowIndex(index) {
+    for (let i = this.rowHeaders.length - 1; i >= 0; i--) {
+      for (let j = index - 1; j >= 0; j--) {
         if (this.cells[i][j].text !== '') {
           return i;
+        }
+      }
+    }
+    return -1;
+  }
+
+  getNewColColIndex(index) {
+    for (let j = index - 1; j >= 0; j--) {
+      for (let i = 0; i < this.rowHeaders.length; i++) {
+        if (this.cells[i][j].text !== '') {
+          return j;
         }
       }
     }
@@ -211,16 +239,19 @@ export default class Sheet {
   // index most left index
   removeCols(index, count) {
     if (this.boundaryCellCoordinate.colIndex >= index && this.boundaryCellCoordinate.colIndex < index + count) {
-      this.boundaryCellCoordinate.rowIndex = this.getNewRowIndex(index);
-      this.boundaryCellCoordinate.colIndex = this.getNewColIndex(index);
+      this.boundaryCellCoordinate.rowIndex = this.getNewColRowIndex(index);
+      this.boundaryCellCoordinate.colIndex = this.getNewColColIndex(index);
     }
+    const width = index === this.colHeaders.length - 1 ? 64 : this.colHeaders[this.colHeaders.length - 1].width;
     for (let i = 0; i < count; i++) {
       for (let j = 0; j < this.rowHeaders.length; j++) {
         this.cells[j].splice(index, 1);
         this.cells[j].push(new Cell());
       }
+      const newColHeader = new ColHeader('A');
+      newColHeader.width = width;
       this.colHeaders.splice(index, 1);
-      this.colHeaders.push(new ColHeader('A'));
+      this.colHeaders.push(newColHeader);
     }
     this.resetColText();
   }

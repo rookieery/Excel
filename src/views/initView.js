@@ -1,17 +1,15 @@
+/* eslint-disable max-len */
 import portray from './portray.js';
 
-import {
-  rowHeaderClickHandler, rowHeaderDownHandler, rowHeaderUpHandler, rowHeaderMoveHandler,
-} from '../controllers/rowHeaderController.js';
-import {
-  colHeaderClickHandler, colHeaderDownHandler, colHeaderUpHandler, colHeaderMoveHandler,
-} from '../controllers/colHeaderController.js';
+import RowHeaderController from '../controllers/rowHeaderController.js';
+import ColHeaderController from '../controllers/colHeaderController.js';
 import cornerClickHandler from '../controllers/cornerController.js';
-import {
-  cellClickHandler, cellDbClickHandler, cellDownHandler, cellUpHandler, cellMoveHandler,
-} from '../controllers/cellController.js';
+import Cell from '../controllers/cellController.js';
 /* eslint-disable max-len */
 // time out event resize
+const colHeaderController = new ColHeaderController();
+const rowHeaderController = new RowHeaderController();
+const cell = new Cell();
 function createCorner(corner) {
   const thCorner = document.createElement('th');
   thCorner.innerText = corner.text;
@@ -34,19 +32,20 @@ function createColHeader(colHeader) {
   // resizeE.addEventListener('mousedown', resizeEsDownHandler, false);
   thColHeader.style.width = `${colHeader.width}px`;
   thColHeader.addEventListener('click', (e) => {
-    colHeaderClickHandler(e);
+    ColHeaderController.colHeaderClickHandler(e);
   }, false);
   thColHeader.addEventListener('mousedown', (e) => {
-    colHeaderDownHandler(e);
+    colHeaderController.colHeaderDownHandler(e);
   }, false);
-  document.addEventListener('mouseup', (e) => {
-    colHeaderUpHandler(e);
+  thColHeader.addEventListener('mouseup', (e) => {
+    colHeaderController.colHeaderUpHandler(e);
   }, false);
   thColHeader.addEventListener('mousemove', (e) => {
-    colHeaderMoveHandler(e);
+    colHeaderController.colHeaderMoveHandler(e);
   }, false);
-  // header.addEventListener('contextmenu', headerMenuHandler, false);
-  // header.addEventListener('mouseup', headerUpHandler, false);
+  thColHeader.addEventListener('contextmenu', (e) => {
+    ColHeaderController.colHeaderMenuHandler(e);
+  }, false);
   return thColHeader;
 }
 
@@ -62,19 +61,20 @@ function createRowHeader(rowHeader) {
   tdRowHeader.style.height = `${rowHeader.height}px`;
   // resizeS.addEventListener('mousedown', resizeSsDownHandler, false);
   tdRowHeader.addEventListener('click', (e) => {
-    rowHeaderClickHandler(e);
+    RowHeaderController.rowHeaderClickHandler(e);
   }, false);
   tdRowHeader.addEventListener('mousedown', (e) => {
-    rowHeaderDownHandler(e);
+    rowHeaderController.rowHeaderDownHandler(e);
   }, false);
-  document.addEventListener('mouseup', (e) => {
-    rowHeaderUpHandler(e);
+  tdRowHeader.addEventListener('mouseup', (e) => {
+    rowHeaderController.rowHeaderUpHandler(e);
   }, false);
   tdRowHeader.addEventListener('mousemove', (e) => {
-    rowHeaderMoveHandler(e);
+    rowHeaderController.rowHeaderMoveHandler(e);
   }, false);
-  // tdRowHeader.addEventListener('contextmenu', rowHeaderMenuHandler, false);
-  // tdRowHeader.addEventListener('mouseup', rowHeaderUpHandler, false);
+  tdRowHeader.addEventListener('contextmenu', (e) => {
+    RowHeaderController.rowHeaderMenuHandler(e);
+  }, false);
   return tdRowHeader;
 }
 
@@ -84,24 +84,39 @@ function createCell(dataIndex, colWidth) {
   tdCell.classList.add('cell');
   tdCell.setAttribute('data-index', dataIndex);
   tdCell.addEventListener('click', (e) => {
-    cellClickHandler(e);
+    Cell.cellClickHandler(e);
   }, false);
   tdCell.addEventListener('dblclick', (e) => {
-    cellDbClickHandler(e);
+    cell.cellDbClickHandler(e);
   }, false);
   tdCell.addEventListener('mousedown', (e) => {
-    cellDownHandler(e);
+    cell.cellDownHandler(e);
   }, false);
   document.addEventListener('mouseup', (e) => {
-    cellUpHandler(e);
+    cell.cellUpHandler(e);
   }, false);
   tdCell.addEventListener('mousemove', (e) => {
-    cellMoveHandler(e);
+    cell.cellMoveHandler(e);
   }, false);
   return tdCell;
 }
-
-export default function initTable(corner, rowHeaders, colHeaders, cells,
+function BindButtonEvent() {
+  const addButton = document.getElementsByClassName('add')[0];
+  const removeButton = document.getElementsByClassName('remove')[0];
+  addButton.addEventListener('click', () => {
+    colHeaderController.addColHeaderHandler();
+  }, false);
+  removeButton.addEventListener('click', () => {
+    colHeaderController.removeColHeaderHandler();
+  }, false);
+  addButton.addEventListener('click', () => {
+    rowHeaderController.addRowHeaderHandler();
+  }, false);
+  removeButton.addEventListener('click', () => {
+    rowHeaderController.removeRowHeaderHandler();
+  }, false);
+}
+export default function initTable(corner, rowHeaders, colHeaders,
   selectType, activeCellCoordinate, selectUpperLeftCoordinate, selectBottomRightCoordinate) {
   const body = document.getElementsByTagName('body')[0];
   const table = document.createElement('table');
@@ -114,7 +129,7 @@ export default function initTable(corner, rowHeaders, colHeaders, cells,
   for (let i = 0; i < rowHeaders.length; i++) {
     const trOther = document.createElement('tr');
     trOther.appendChild(createRowHeader(rowHeaders[i]));
-    for (let j = 0; j < cells.length; j++) {
+    for (let j = 0; j < colHeaders.length; j++) {
       trOther.appendChild(createCell(colHeaders[j].text, colHeaders[j].width));
     }
     table.appendChild(trOther);
@@ -123,7 +138,8 @@ export default function initTable(corner, rowHeaders, colHeaders, cells,
   bigFrame.classList.add('bigFrame');
   const smallFrame = document.createElement('div');
   smallFrame.classList.add('smallFrame');
-  bigFrame.appendChild(smallFrame);
   table.appendChild(bigFrame);
+  table.appendChild(smallFrame);
   portray(selectType, selectUpperLeftCoordinate, selectBottomRightCoordinate, activeCellCoordinate);
+  BindButtonEvent();
 }

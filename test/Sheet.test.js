@@ -12,7 +12,6 @@ function refreshExcel(data) {
   console.log(data);
 }
 
-
 function testInit() {
   const expectData = {
     rowHeaders: [new RowHeader('1'), new RowHeader('2'), new RowHeader('3'), new RowHeader('4')],
@@ -152,5 +151,3 @@ function testInit() {
   console.log('success!');
 }
 testInit();
-
-

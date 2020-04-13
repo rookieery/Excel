@@ -2,44 +2,98 @@
 import sheet from './sheet.js';
 import portray from '../views/portray.js';
 import constants from '../utils/constant.js';
+import { updateRowData } from '../views/updateData.js';
 
-let startMoveRowHeaderFlag = false;
-let startRowHeader = null;
-export function rowHeaderClickHandler(e) {
-  if (e.target.className === 'resizeS') {
-    return;
+
+export default class RowHeaderController {
+  constructor() {
+    this.startMoveRowHeaderFlag = false;
+    this.startRowHeader = null;
+    this.endRowHeader = null;
   }
-  const targetRow = e.target.tagName === 'SPAN' ? e.srcElement.parentElement.parentElement : e.srcElement.parentElement;
-  const rowIndex = targetRow.rowIndex - 1;
-  sheet.changeSelectRange('rowHeader', 0, rowIndex, constants.colLength - 1, rowIndex, 0, rowIndex);
-  portray(sheet.selectRange.selectType, sheet.selectRange.selectUpperLeftCoordinate,
-    sheet.selectRange.selectBottomRightCoordinate, sheet.activeCellCoordinate);
-}
-function refreshSheet(data) {
-  if (data.result) {
+
+  addRowHeaderHandler() {
+    if (sheet.selectRange.selectType !== 'rowHeader') {
+      return;
+    }
+    try {
+      sheet.addRows(Math.min(this.startRowHeader.rowIndex, this.endRowHeader.rowIndex) - 1,
+        Math.abs(this.startRowHeader.rowIndex - this.endRowHeader.rowIndex) + 1);
+    } catch (e) {
+      alert('此操作会被动删除已有数据！');
+    }
+    updateRowData(sheet.rowHeaders, sheet.cells);
+  }
+
+  removeRowHeaderHandler() {
+    if (sheet.selectRange.selectType !== 'rowHeader') {
+      return;
+    }
+    sheet.removeRows(Math.min(this.startRowHeader.rowIndex, this.endRowHeader.rowIndex) - 1,
+      Math.abs(this.startRowHeader.rowIndex - this.endRowHeader.rowIndex) + 1);
+    updateRowData(sheet.rowHeaders, sheet.cells);
+  }
+
+  static rowHeaderClickHandler(e) {
+    if (e.target.className === 'resizeS') {
+      return;
+    }
+    const targetRow = e.target.tagName === 'SPAN' ? e.target.parentElement.parentElement : e.target.parentElement;
+    const rowIndex = targetRow.rowIndex - 1;
+    sheet.changeSelectRange('rowHeader', 0, rowIndex, constants.colLength - 1, rowIndex, 0, rowIndex);
     portray(sheet.selectRange.selectType, sheet.selectRange.selectUpperLeftCoordinate,
       sheet.selectRange.selectBottomRightCoordinate, sheet.activeCellCoordinate);
   }
-}
 
-export function rowHeaderDownHandler(e) {
-  const targetRow = e.target.tagName === 'SPAN' || e.target.className === 'resizeS' ? e.target.parentElement : e.target;
-  startRowHeader = targetRow.parentElement;
-  startMoveRowHeaderFlag = true;
-  sheet.initEvent(refreshSheet);
-}
+  static refreshSheet(data) {
+    if (data.result) {
+      portray(sheet.selectRange.selectType, sheet.selectRange.selectUpperLeftCoordinate,
+        sheet.selectRange.selectBottomRightCoordinate, sheet.activeCellCoordinate);
+    }
+  }
 
-export function rowHeaderUpHandler() {
-  startMoveRowHeaderFlag = false;
-  sheet.initEvent(null);
-}
-
-export function rowHeaderMoveHandler(e) {
-  if (startMoveRowHeaderFlag) {
+  rowHeaderDownHandler(e) {
     const targetRow = e.target.tagName === 'SPAN' || e.target.className === 'resizeS' ? e.target.parentElement : e.target;
-    const { rowIndex } = targetRow.parentElement;
-    sheet.changeSelectRange('rowHeader', 0, Math.min(startRowHeader.rowIndex, rowIndex) - 1,
-      constants.colLength - 1, Math.max(startRowHeader.rowIndex, rowIndex) - 1,
-      0, startRowHeader.rowIndex - 1);
+    if (e.button === 2) {
+      if (this.startRowHeader === null || this.endRowHeader === null || sheet.selectRange.selectType !== 'rowHeader'
+        || (targetRow.parentElement.rowIndex - this.startRowHeader.rowIndex) * (targetRow.parentElement.rowIndex - this.endRowHeader.rowIndex) > 0) {
+        this.startRowHeader = targetRow.parentElement;
+        this.endRowHeader = targetRow.parentElement;
+        RowHeaderController.rowHeaderClickHandler(e);
+      }
+      document.getElementsByClassName('add')[0].style.visibility = 'visible';
+      document.getElementsByClassName('remove')[0].style.visibility = 'visible';
+      return;
+    }
+    this.startRowHeader = targetRow.parentElement;
+    this.startMoveRowHeaderFlag = true;
+    sheet.initEvent(RowHeaderController.refreshSheet);
+  }
+
+  rowHeaderUpHandler(e) {
+    if (e.button === 2) {
+      return;
+    }
+    const targetRow = e.target.tagName === 'SPAN' || e.target.className === 'resizeS' ? e.target.parentElement : e.target;
+    this.endRowHeader = targetRow.parentElement;
+    this.startMoveRowHeaderFlag = false;
+    sheet.initEvent(null);
+  }
+
+  rowHeaderMoveHandler(e) {
+    if (e.button === 2) {
+      return;
+    }
+    if (this.startMoveRowHeaderFlag) {
+      const targetRow = e.target.tagName === 'SPAN' || e.target.className === 'resizeS' ? e.target.parentElement : e.target;
+      const { rowIndex } = targetRow.parentElement;
+      sheet.changeSelectRange('rowHeader', 0, Math.min(this.startRowHeader.rowIndex, rowIndex) - 1,
+        constants.colLength - 1, Math.max(this.startRowHeader.rowIndex, rowIndex) - 1,
+        0, this.startRowHeader.rowIndex - 1);
+    }
+  }
+
+  static rowHeaderMenuHandler(e) {
+    e.preventDefault();
   }
 }

@@ -4,103 +4,105 @@ import sheet from './sheet.js';
 import portray from '../views/portray.js';
 import constants from '../utils/constant.js';
 
-const table = document.getElementsByClassName('table');
-let startMoveCellFlag = false;
-let startCell = null;
-function appendInput(inputElement, rows, rect) {
-  inputElement.style.width = `${rows[0].getClientRects()[0].width}px`;
-  inputElement.style.height = `${rows[0].getClientRects()[0].height}px`;
-  inputElement.style.border = '1.5px solid rgb(21, 104, 10)';
-  inputElement.style.position = 'fixed';
-  inputElement.style.top = `${rect.top}px`;
-  inputElement.style.left = `${rect.left}px`;
-  inputElement.style.outline = 'none';
-  inputElement.style.zIndex = '3';
-  table[0].appendChild(inputElement);
-  inputElement.focus();
-}
-
-function cellText(cell, text) {
-  cell.innerText = text;
-  if (parseFloat(text).toString() === 'NaN') {
-    cell.style.textAlign = 'left';
-  } else {
-    cell.style.textAlign = 'right';
+export default class Cell {
+  constructor() {
+    this.table = document.getElementsByClassName('table');
+    this.startMoveCellFlag = false;
+    this.startCell = null;
   }
-}
 
-export function cellDbClickHandler(e) {
-  const rows = [e.srcElement, e.srcElement.parentElement];
-  const rect = e.srcElement.getBoundingClientRect();
-  const inputElement = document.createElement('input');
-  setTimeout(() => {
-    appendInput(inputElement, rows, rect);
-  }, 0);
-  const cell = e.srcElement;
-  const oldText = cell.innerText;
-  if (oldText != null) {
-    inputElement.value = oldText;
-    cell.innerText = null;
+  appendInput(inputElement, cell) {
+    inputElement.style.width = `${cell.offsetWidth}px`;
+    inputElement.style.height = `${cell.offsetHeight}px`;
+    inputElement.style.border = '1.5px solid rgb(21, 104, 10)';
+    inputElement.style.position = 'absolute';
+    inputElement.style.top = `${cell.offsetTop}px`;
+    inputElement.style.left = `${cell.offsetLeft}px`;
+    inputElement.style.outline = 'none';
+    inputElement.style.zIndex = '3';
+    this.table[0].appendChild(inputElement);
+    inputElement.focus();
   }
-  const colIndex = e.target.cellIndex;
-  const { rowIndex } = e.srcElement.parentElement;
-  inputElement.addEventListener('keydown', (event) => {
-    if (event.keyCode === 9) {
-      cellText(cell, inputElement.value);
-      if (colIndex !== constants.colLength) {
-        table[0].rows[rowIndex].children[colIndex + 1].click();
-      } else {
-        cell.click();
-      }
-      inputElement.blur();
-    } else if (event.keyCode === 13) {
-      cellText(cell, inputElement.value);
-      if (rowIndex !== constants.rowLength) {
-        table[0].rows[rowIndex + 1].children[colIndex].click();
-      } else {
-        cell.click();
-      }
-      inputElement.blur();
+
+  static cellText(cell, text, colIndex, rowIndex) {
+    cell.innerText = text;
+    sheet.updateCellText(colIndex, rowIndex, text);
+    if (parseFloat(text).toString() === 'NaN') {
+      cell.style.textAlign = 'left';
+    } else {
+      cell.style.textAlign = 'right';
     }
-  }, false);
-  inputElement.addEventListener('blur', () => {
-    cellText(cell, inputElement.value);
-    table[0].removeChild(inputElement);
-  }, false);
-}
+  }
 
-export function cellClickHandler(e) {
-  const colIndex = e.target.cellIndex - 1;
-  const rowIndex = e.srcElement.parentElement.rowIndex - 1;
-  sheet.changeSelectRange('cell', colIndex, rowIndex, colIndex, rowIndex, colIndex, rowIndex);
-  portray(sheet.selectRange.selectType, sheet.selectRange.selectUpperLeftCoordinate,
-    sheet.selectRange.selectBottomRightCoordinate, sheet.activeCellCoordinate);
-}
+  cellDbClickHandler(e) {
+    const cell = e.target;
+    const inputElement = document.createElement('input');
+    setTimeout(() => {
+      this.appendInput(inputElement, cell);
+    }, 0);
+    const oldText = cell.innerText;
+    if (oldText != null) {
+      inputElement.value = oldText;
+      cell.innerText = null;
+    }
+    const colIndex = e.target.cellIndex;
+    const { rowIndex } = e.target.parentElement;
+    inputElement.addEventListener('keydown', (event) => {
+      if (event.keyCode === 9) {
+        if (colIndex !== constants.colLength) {
+          this.table[0].rows[rowIndex].children[colIndex + 1].click();
+        } else {
+          cell.click();
+        }
+        inputElement.blur();
+      } else if (event.keyCode === 13) {
+        if (rowIndex !== constants.rowLength) {
+          this.table[0].rows[rowIndex + 1].children[colIndex].click();
+        } else {
+          cell.click();
+        }
+        inputElement.blur();
+      }
+    }, false);
+    inputElement.addEventListener('blur', () => {
+      Cell.cellText(cell, inputElement.value, colIndex - 1, rowIndex - 1);
+      this.table[0].removeChild(inputElement);
+    }, false);
+  }
 
-function refreshSheet(data) {
-  if (data.result) {
+  static cellClickHandler(e) {
+    const colIndex = e.target.cellIndex - 1;
+    const rowIndex = e.target.parentElement.rowIndex - 1;
+    sheet.changeSelectRange('cell', colIndex, rowIndex, colIndex, rowIndex, colIndex, rowIndex);
     portray(sheet.selectRange.selectType, sheet.selectRange.selectUpperLeftCoordinate,
       sheet.selectRange.selectBottomRightCoordinate, sheet.activeCellCoordinate);
   }
-}
 
-export function cellDownHandler(e) {
-  startCell = e.target;
-  startMoveCellFlag = true;
-  sheet.initEvent(refreshSheet);
-}
+  static refreshSheet(data) {
+    if (data.result) {
+      portray(sheet.selectRange.selectType, sheet.selectRange.selectUpperLeftCoordinate,
+        sheet.selectRange.selectBottomRightCoordinate, sheet.activeCellCoordinate);
+    }
+  }
 
-export function cellUpHandler() {
-  startMoveCellFlag = false;
-  sheet.initEvent(null);
-}
+  cellDownHandler(e) {
+    this.startCell = e.target;
+    this.startMoveCellFlag = true;
+    sheet.initEvent(Cell.refreshSheet);
+  }
 
-export function cellMoveHandler(e) {
-  if (startMoveCellFlag) {
-    const colIndex = e.target.cellIndex;
-    const { rowIndex } = e.srcElement.parentElement;
-    sheet.changeSelectRange('cell', Math.min(startCell.cellIndex, colIndex) - 1, Math.min(startCell.parentElement.rowIndex, rowIndex) - 1,
-      Math.max(startCell.cellIndex, colIndex) - 1, Math.max(startCell.parentElement.rowIndex, rowIndex) - 1,
-      startCell.cellIndex - 1, startCell.parentElement.rowIndex - 1);
+  cellUpHandler() {
+    this.startMoveCellFlag = false;
+    sheet.initEvent(null);
+  }
+
+  cellMoveHandler(e) {
+    if (this.startMoveCellFlag) {
+      const colIndex = e.target.cellIndex;
+      const { rowIndex } = e.target.parentElement;
+      sheet.changeSelectRange('cell', Math.min(this.startCell.cellIndex, colIndex) - 1, Math.min(this.startCell.parentElement.rowIndex, rowIndex) - 1,
+        Math.max(this.startCell.cellIndex, colIndex) - 1, Math.max(this.startCell.parentElement.rowIndex, rowIndex) - 1,
+        this.startCell.cellIndex - 1, this.startCell.parentElement.rowIndex - 1);
+    }
   }
 }

@@ -72,6 +72,11 @@ function setSmallFrameText(smallFrame, smallFrameCell) {
     smallFrame.style.textAlign = 'right';
   }
 }
+function hiddenButtons() {
+  document.getElementsByClassName('add')[0].style.visibility = 'hidden';
+  document.getElementsByClassName('remove')[0].style.visibility = 'hidden';
+}
+
 function portrayFrame(activeCellCoordinate, selectUpperLeftCoordinate, selectBottomRightCoordinate) {
   const bigFrame = document.getElementsByClassName('bigFrame')[0];
   const smallFrame = document.getElementsByClassName('smallFrame')[0];
@@ -83,16 +88,17 @@ function portrayFrame(activeCellCoordinate, selectUpperLeftCoordinate, selectBot
     .rows[activeCellCoordinate.rowIndex + 1].children[activeCellCoordinate.colIndex + 1];
   bigFrame.style.height = `${bigFrameBottomRightCell.getBoundingClientRect().bottom - bigFrameUpperLeftCell.getBoundingClientRect().top}px`;
   bigFrame.style.width = `${bigFrameBottomRightCell.getBoundingClientRect().right - bigFrameUpperLeftCell.getBoundingClientRect().left}px`;
-  bigFrame.style.top = `${bigFrameUpperLeftCell.getBoundingClientRect().top}px`;
-  bigFrame.style.left = `${bigFrameUpperLeftCell.getBoundingClientRect().left}px`;
-  smallFrame.style.width = `${smallFrameCell.getBoundingClientRect().width - 4}px`;
-  smallFrame.style.height = `${smallFrameCell.getBoundingClientRect().height - 4}px`;
-  smallFrame.style.top = `${smallFrameCell.getBoundingClientRect().top + 1.5}px`;
-  smallFrame.style.left = `${smallFrameCell.getBoundingClientRect().left + 1.5}px`;
+  bigFrame.style.top = `${bigFrameUpperLeftCell.offsetTop}px`;
+  bigFrame.style.left = `${bigFrameUpperLeftCell.offsetLeft}px`;
+  smallFrame.style.width = `${smallFrameCell.offsetWidth - 4}px`;
+  smallFrame.style.height = `${smallFrameCell.offsetHeight - 4}px`;
+  smallFrame.style.top = `${smallFrameCell.offsetTop + 1.5}px`;
+  smallFrame.style.left = `${smallFrameCell.offsetLeft + 1.5}px`;
   setSmallFrameText(smallFrame, smallFrameCell);
 }
 
 function portrayBoundary(selectType, selectUpperLeftCoordinate, selectBottomRightCoordinate) {
+  hiddenButtons();
   switch (selectType) {
     case 'cell':
       portrayCellEvent(selectUpperLeftCoordinate, selectBottomRightCoordinate);
