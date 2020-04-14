@@ -72,10 +72,6 @@ function setSmallFrameText(smallFrame, smallFrameCell) {
     smallFrame.style.textAlign = 'right';
   }
 }
-function hiddenButtons() {
-  document.getElementsByClassName('add')[0].style.visibility = 'hidden';
-  document.getElementsByClassName('remove')[0].style.visibility = 'hidden';
-}
 
 function portrayFrame(activeCellCoordinate, selectUpperLeftCoordinate, selectBottomRightCoordinate) {
   const bigFrame = document.getElementsByClassName('bigFrame')[0];
@@ -98,7 +94,7 @@ function portrayFrame(activeCellCoordinate, selectUpperLeftCoordinate, selectBot
 }
 
 function portrayBoundary(selectType, selectUpperLeftCoordinate, selectBottomRightCoordinate) {
-  hiddenButtons();
+  // hiddenButtons();
   switch (selectType) {
     case 'cell':
       portrayCellEvent(selectUpperLeftCoordinate, selectBottomRightCoordinate);

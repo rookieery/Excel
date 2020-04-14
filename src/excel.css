@@ -68,6 +68,7 @@ a{
 .colHeader {
     position: relative;
     line-height: 25px;
+    height: 25px;
     min-height: 25px;
     max-height: 25px;
     text-align: center;
@@ -79,9 +80,9 @@ a{
 .resizeE {
     position: absolute;
     cursor: e-resize;
-    width: 12px;
+    width: 8px;
     height: 100%;
-    right: -6px;
+    right: -4px;
     top:0;
     z-index: 10;
 }
@@ -99,6 +100,8 @@ a{
     cursor: s-resize !important;
 }
 .corner{
+    width: 36px;
+    height: 26px;
     min-width: 36px;
     min-height: 26px;
     max-width: 36px;
@@ -119,6 +122,7 @@ a{
 }
 .rowHeader {
     position: relative;
+    width: 36px;
     min-width: 36px;
     max-width: 36px;
     line-height: 25px;

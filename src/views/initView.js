@@ -5,11 +5,13 @@ import RowHeaderController from '../controllers/rowHeaderController.js';
 import ColHeaderController from '../controllers/colHeaderController.js';
 import cornerClickHandler from '../controllers/cornerController.js';
 import Cell from '../controllers/cellController.js';
+import Resize from '../controllers/resizeController.js';
 /* eslint-disable max-len */
 // time out event resize
 const colHeaderController = new ColHeaderController();
 const rowHeaderController = new RowHeaderController();
 const cell = new Cell();
+const resize = new Resize();
 function createCorner(corner) {
   const thCorner = document.createElement('th');
   thCorner.innerText = corner.text;
@@ -29,7 +31,8 @@ function createColHeader(colHeader) {
   thColHeader.appendChild(span);
   thColHeader.appendChild(resizeE);
   thColHeader.children[0].innerText = colHeader.text;
-  // resizeE.addEventListener('mousedown', resizeEsDownHandler, false);
+  resizeE.addEventListener('mousedown', resize.resizeEsDownHandler, false);
+
   thColHeader.style.width = `${colHeader.width}px`;
   thColHeader.addEventListener('click', (e) => {
     ColHeaderController.colHeaderClickHandler(e);
@@ -92,9 +95,6 @@ function createCell(dataIndex, colWidth) {
   tdCell.addEventListener('mousedown', (e) => {
     cell.cellDownHandler(e);
   }, false);
-  document.addEventListener('mouseup', (e) => {
-    cell.cellUpHandler(e);
-  }, false);
   tdCell.addEventListener('mousemove', (e) => {
     cell.cellMoveHandler(e);
   }, false);
@@ -134,6 +134,15 @@ export default function initTable(corner, rowHeaders, colHeaders,
     }
     table.appendChild(trOther);
   }
+  document.addEventListener('mouseup', (e) => {
+    cell.cellUpHandler(e);
+  }, false);
+  document.addEventListener('mousemove', resize.resizeEsMoveHandler);
+  document.addEventListener('mouseup', resize.resizeEsUpHandler);
+  window.addEventListener('beforeunload', () => {
+    document.removeEventListener('mousemove', resize.resizeEsMoveHandler);
+    document.removeEventListener('mouseup', resize.resizeEsUpHandler);
+  });
   const bigFrame = document.createElement('div');
   bigFrame.classList.add('bigFrame');
   const smallFrame = document.createElement('div');

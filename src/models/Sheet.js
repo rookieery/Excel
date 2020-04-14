@@ -10,6 +10,7 @@ import Corner from './corner.js';
 import SelectRange from './selectRange.js';
 
 import Coordinate from './coordinate.js';
+import constants from '../utils/constant.js';
 
 export default class Sheet {
   constructor() {
@@ -75,30 +76,32 @@ export default class Sheet {
 
   // final status
   changeColWidth(index, count, width) {
+    console.log('$$$ ', index);
     if (count === 1) {
-      let actualWidth = width + this.colHeaders[index].width;
-      if (actualWidth >= 0) {
+      let actualWidth = width;
+      if (actualWidth >= constants.colResizeMinWidth) {
         this.colHeaders[index].width = width;
       } else {
-        this.colHeaders[index].width = 0;
+        this.colHeaders[index].width = constants.colResizeMinWidth;
         let i = index - 1;
-        while (i >= 0 && actualWidth < 0) {
+        while (i >= 0 && actualWidth < constants.colResizeMinWidth) {
           actualWidth += this.colHeaders[i].width;
-          this.colHeaders[i].width = actualWidth >= 0 ? actualWidth : 0;
+          this.colHeaders[i].width = actualWidth >= constants.colResizeMinWidth ? actualWidth : constants.colResizeMinWidth;
           i--;
         }
       }
     } else {
-      const actualWidth = width < 0 ? 0 : width;
+      const actualWidth = width < constants.colResizeMinWidth ? constants.colResizeMinWidth : width;
       for (let i = index; i < index + count; i++) {
         this.colHeaders[i].width = actualWidth;
       }
     }
+    console.log('===> ', this.colHeaders);
   }
 
   changeRowHeight(index, count, height) {
     if (count === 1) {
-      let actualHeight = height + this.rowHeaders[index].height;
+      let actualHeight = height;
       if (actualHeight >= 0) {
         this.rowHeaders[index].height = height;
       } else {
@@ -152,7 +155,7 @@ export default class Sheet {
   }
 
   getNewRowRowIndex(index) {
-    for (let i = index - 1; i >= 0; i--) {
+    for (let i = index; i >= 0; i--) {
       for (let j = 0; j < this.colHeaders.length; j++) {
         if (this.cells[i][j].text !== '') {
           return i;
@@ -164,7 +167,7 @@ export default class Sheet {
 
   getNewRowColIndex(index) {
     for (let j = this.colHeaders.length - 1; j >= 0; j--) {
-      for (let i = 0; i < index; i++) {
+      for (let i = 0; i <= index; i++) {
         if (this.cells[i][j].text !== '') {
           return j;
         }
@@ -174,10 +177,6 @@ export default class Sheet {
   }
 
   removeRows(index, count) {
-    if (this.boundaryCellCoordinate.rowIndex >= index && this.boundaryCellCoordinate.rowIndex < index + count) {
-      this.boundaryCellCoordinate.rowIndex = this.getNewRowRowIndex(index);
-      this.boundaryCellCoordinate.colIndex = this.getNewRowColIndex(index);
-    }
     for (let i = 0; i < count; i++) {
       this.cells.splice(index, 1);
       this.cells.push(this.createRow());
@@ -185,6 +184,10 @@ export default class Sheet {
       this.rowHeaders.push(new RowHeader('1'));
     }
     this.resetRowText();
+    if (this.boundaryCellCoordinate.rowIndex >= index + count - 1) {
+      this.boundaryCellCoordinate.rowIndex = this.getNewRowRowIndex(index);
+      this.boundaryCellCoordinate.colIndex = this.getNewRowColIndex(index);
+    }
   }
 
   resetColText() {
@@ -216,7 +219,7 @@ export default class Sheet {
 
   getNewColRowIndex(index) {
     for (let i = this.rowHeaders.length - 1; i >= 0; i--) {
-      for (let j = index - 1; j >= 0; j--) {
+      for (let j = 0; j <= index; j++) {
         if (this.cells[i][j].text !== '') {
           return i;
         }
@@ -226,7 +229,7 @@ export default class Sheet {
   }
 
   getNewColColIndex(index) {
-    for (let j = index - 1; j >= 0; j--) {
+    for (let j = index; j >= 0; j--) {
       for (let i = 0; i < this.rowHeaders.length; i++) {
         if (this.cells[i][j].text !== '') {
           return j;
@@ -238,10 +241,6 @@ export default class Sheet {
 
   // index most left index
   removeCols(index, count) {
-    if (this.boundaryCellCoordinate.colIndex >= index && this.boundaryCellCoordinate.colIndex < index + count) {
-      this.boundaryCellCoordinate.rowIndex = this.getNewColRowIndex(index);
-      this.boundaryCellCoordinate.colIndex = this.getNewColColIndex(index);
-    }
     const width = index === this.colHeaders.length - 1 ? 64 : this.colHeaders[this.colHeaders.length - 1].width;
     for (let i = 0; i < count; i++) {
       for (let j = 0; j < this.rowHeaders.length; j++) {
@@ -254,5 +253,9 @@ export default class Sheet {
       this.colHeaders.push(newColHeader);
     }
     this.resetColText();
+    if (this.boundaryCellCoordinate.colIndex >= index + count - 1) {
+      this.boundaryCellCoordinate.rowIndex = this.getNewColRowIndex(index);
+      this.boundaryCellCoordinate.colIndex = this.getNewColColIndex(index);
+    }
   }
 }
