@@ -2,7 +2,7 @@
 import sheet from './sheet.js';
 import portray from '../views/portray.js';
 import constants from '../utils/constant.js';
-import { updateColData } from '../views/updateData.js';
+import { updateColData } from '../views/addAndRemove.js';
 
 export default class ColHeaderController {
   constructor() {
@@ -12,7 +12,7 @@ export default class ColHeaderController {
   }
 
   addColHeaderHandler() {
-    if (sheet.selectRange.selectType !== 'colHeader') {
+    if (sheet.selectRange.selectType !== constants.colSelectType) {
       return;
     }
     try {
@@ -28,7 +28,7 @@ export default class ColHeaderController {
   }
 
   removeColHeaderHandler() {
-    if (sheet.selectRange.selectType !== 'colHeader') {
+    if (sheet.selectRange.selectType !== constants.colSelectType) {
       return;
     }
     sheet.removeCols(Math.min(this.startColHeader.cellIndex, this.endColHeader.cellIndex) - 1,
@@ -40,12 +40,12 @@ export default class ColHeaderController {
   }
 
   static colHeaderClickHandler(e) {
-    if (e.target.className === 'resizeE') {
+    if (e.target.className === constants.colHeaderDivClassName) {
       return;
     }
-    const targetCol = e.target.tagName === 'SPAN' ? e.target.parentElement : e.target;
+    const targetCol = e.target.tagName === constants.spanTargetName ? e.target.parentElement : e.target;
     const colIndex = targetCol.cellIndex - 1;
-    sheet.changeSelectRange('colHeader', colIndex, 0, colIndex, constants.rowLength - 1, colIndex, 0);
+    sheet.changeSelectRange(constants.colSelectType, colIndex, 0, colIndex, constants.rowLength - 1, colIndex, 0);
     portray(sheet.selectRange.selectType, sheet.selectRange.selectUpperLeftCoordinate,
       sheet.selectRange.selectBottomRightCoordinate, sheet.activeCellCoordinate);
   }
@@ -58,16 +58,15 @@ export default class ColHeaderController {
   }
 
   colHeaderDownHandler(e) {
-    if (e.target.className === 'resizeE') {
+    if (e.target.className === constants.colHeaderDivClassName) {
       return;
     }
-    const targetCol = e.target.tagName === 'SPAN' ? e.target.parentElement : e.target;
+    const targetCol = e.target.tagName === constants.spanTargetName ? e.target.parentElement : e.target;
     if (e.button === 2) {
-      if (this.startColHeader === null || this.endColHeader === null || sheet.selectRange.selectType !== 'colHeader'
+      if (this.startColHeader === null || this.endColHeader === null || sheet.selectRange.selectType !== constants.colSelectType
         || (targetCol.cellIndex - this.startColHeader.cellIndex) * (targetCol.cellIndex - this.endColHeader.cellIndex) > 0) {
         this.startColHeader = targetCol;
         this.endColHeader = targetCol;
-        // ColHeaderController.colHeaderClickHandler(e);
         targetCol.click();
       }
       document.getElementsByClassName('add')[0].style.visibility = 'visible';
@@ -80,23 +79,23 @@ export default class ColHeaderController {
   }
 
   colHeaderUpHandler(e) {
-    if (e.button === 2 || e.target.className === 'resizeE') {
+    if (e.button === 2 || e.target.className === constants.colHeaderDivClassName) {
       return;
     }
-    const targetCol = e.target.tagName === 'SPAN' ? e.target.parentElement : e.target;
+    const targetCol = e.target.tagName === constants.spanTargetName ? e.target.parentElement : e.target;
     this.endColHeader = targetCol;
     this.startMoveColHeaderFlag = false;
     sheet.initEvent(null);
   }
 
   colHeaderMoveHandler(e) {
-    if (e.button === 2 || e.target.className === 'resizeE') {
+    if (e.button === 2 || e.target.className === constants.colHeaderDivClassName) {
       return;
     }
     if (this.startMoveColHeaderFlag) {
-      const targetCol = e.target.tagName === 'SPAN' ? e.target.parentElement : e.target;
+      const targetCol = e.target.tagName === constants.spanTargetName ? e.target.parentElement : e.target;
       const colIndex = targetCol.cellIndex;
-      sheet.changeSelectRange('colHeader', Math.min(this.startColHeader.cellIndex, colIndex) - 1, 0,
+      sheet.changeSelectRange(constants.colSelectType, Math.min(this.startColHeader.cellIndex, colIndex) - 1, 0,
         Math.max(this.startColHeader.cellIndex, colIndex) - 1, constants.rowLength - 1,
         this.startColHeader.cellIndex - 1, 0);
     }

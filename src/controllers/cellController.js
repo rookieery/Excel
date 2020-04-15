@@ -73,7 +73,7 @@ export default class Cell {
   static cellClickHandler(e) {
     const colIndex = e.target.cellIndex - 1;
     const rowIndex = e.target.parentElement.rowIndex - 1;
-    sheet.changeSelectRange('cell', colIndex, rowIndex, colIndex, rowIndex, colIndex, rowIndex);
+    sheet.changeSelectRange(constants.cellSelectType, colIndex, rowIndex, colIndex, rowIndex, colIndex, rowIndex);
     portray(sheet.selectRange.selectType, sheet.selectRange.selectUpperLeftCoordinate,
       sheet.selectRange.selectBottomRightCoordinate, sheet.activeCellCoordinate);
   }
@@ -100,7 +100,7 @@ export default class Cell {
     if (this.startMoveCellFlag) {
       const colIndex = e.target.cellIndex;
       const { rowIndex } = e.target.parentElement;
-      sheet.changeSelectRange('cell', Math.min(this.startCell.cellIndex, colIndex) - 1, Math.min(this.startCell.parentElement.rowIndex, rowIndex) - 1,
+      sheet.changeSelectRange(constants.cellSelectType, Math.min(this.startCell.cellIndex, colIndex) - 1, Math.min(this.startCell.parentElement.rowIndex, rowIndex) - 1,
         Math.max(this.startCell.cellIndex, colIndex) - 1, Math.max(this.startCell.parentElement.rowIndex, rowIndex) - 1,
         this.startCell.cellIndex - 1, this.startCell.parentElement.rowIndex - 1);
     }

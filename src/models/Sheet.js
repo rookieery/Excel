@@ -76,45 +76,21 @@ export default class Sheet {
 
   // final status
   changeColWidth(index, count, width) {
-    console.log('$$$ ', index);
     if (count === 1) {
-      let actualWidth = width;
-      if (actualWidth >= constants.colResizeMinWidth) {
-        this.colHeaders[index].width = width;
-      } else {
-        this.colHeaders[index].width = constants.colResizeMinWidth;
-        let i = index - 1;
-        while (i >= 0 && actualWidth < constants.colResizeMinWidth) {
-          actualWidth += this.colHeaders[i].width;
-          this.colHeaders[i].width = actualWidth >= constants.colResizeMinWidth ? actualWidth : constants.colResizeMinWidth;
-          i--;
-        }
-      }
+      this.colHeaders[index].width = width;
     } else {
       const actualWidth = width < constants.colResizeMinWidth ? constants.colResizeMinWidth : width;
       for (let i = index; i < index + count; i++) {
         this.colHeaders[i].width = actualWidth;
       }
     }
-    console.log('===> ', this.colHeaders);
   }
 
   changeRowHeight(index, count, height) {
     if (count === 1) {
-      let actualHeight = height;
-      if (actualHeight >= 0) {
-        this.rowHeaders[index].height = height;
-      } else {
-        this.rowHeaders[index].height = 0;
-        let i = index - 1;
-        while (i >= 0 && actualHeight < 0) {
-          actualHeight += this.rowHeaders[i].height;
-          this.rowHeaders[i].height = actualHeight >= 0 ? actualHeight : 0;
-          i--;
-        }
-      }
+      this.rowHeaders[index].height = height;
     } else {
-      const actualHeight = height < 0 ? 0 : height;
+      const actualHeight = height < constants.rowResizeMinHeight ? constants.rowResizeMinHeight : height;
       for (let i = index; i < index + count; i++) {
         this.rowHeaders[i].height = actualHeight;
       }
@@ -146,9 +122,9 @@ export default class Sheet {
     for (let i = 0; i < count; i++) {
       this.cells.splice(index, 0, this.createRow());
       this.cells.pop();
-      const newHeader = new RowHeader('1');
-      newHeader.height = height;
-      this.rowHeaders.splice(index, 0, newHeader);
+      const newRowHeader = new RowHeader('1');
+      newRowHeader.height = height;
+      this.rowHeaders.splice(index, 0, newRowHeader);
       this.rowHeaders.pop();
     }
     this.resetRowText();
@@ -239,7 +215,6 @@ export default class Sheet {
     return -1;
   }
 
-  // index most left index
   removeCols(index, count) {
     const width = index === this.colHeaders.length - 1 ? 64 : this.colHeaders[this.colHeaders.length - 1].width;
     for (let i = 0; i < count; i++) {

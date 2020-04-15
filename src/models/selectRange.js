@@ -1,9 +1,10 @@
 /* eslint-disable max-len */
 import Coordinate from './coordinate.js';
+import constants from '../utils/constant.js';
 
 export default class SelectRange {
   constructor() {
-    this.selectType = 'cell';
+    this.selectType = constants.cellSelectType;
     this.selectUpperLeftCoordinate = new Coordinate(0, 0);
     this.selectBottomRightCoordinate = new Coordinate(0, 0);
   }

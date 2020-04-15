@@ -28,7 +28,7 @@ export function updateRowData(rowHeaders, cells) {
     const trParent = tableParent.children[i];
     for (let j = 0; j <= constants.colLength; j++) {
       if (j === 0) {
-        trParent.children[j].style.height = rowHeaders[i - 1].height;
+        trParent.children[j].style.height = `${rowHeaders[i - 1].height}px`;
       } else {
         trParent.children[j].innerText = cells[i - 1][j - 1].text;
       }

@@ -31,8 +31,7 @@ function createColHeader(colHeader) {
   thColHeader.appendChild(span);
   thColHeader.appendChild(resizeE);
   thColHeader.children[0].innerText = colHeader.text;
-  resizeE.addEventListener('mousedown', resize.resizeEsDownHandler, false);
-
+  resizeE.addEventListener('mousedown', resize.resizeColHeaderDownHandler, false);
   thColHeader.style.width = `${colHeader.width}px`;
   thColHeader.addEventListener('click', (e) => {
     ColHeaderController.colHeaderClickHandler(e);
@@ -62,7 +61,7 @@ function createRowHeader(rowHeader) {
   tdRowHeader.appendChild(resizeS);
   tdRowHeader.children[0].innerText = rowHeader.text;
   tdRowHeader.style.height = `${rowHeader.height}px`;
-  // resizeS.addEventListener('mousedown', resizeSsDownHandler, false);
+  resizeS.addEventListener('mousedown', resize.resizeRowHeaderDownHandler, false);
   tdRowHeader.addEventListener('click', (e) => {
     RowHeaderController.rowHeaderClickHandler(e);
   }, false);
@@ -137,12 +136,6 @@ export default function initTable(corner, rowHeaders, colHeaders,
   document.addEventListener('mouseup', (e) => {
     cell.cellUpHandler(e);
   }, false);
-  document.addEventListener('mousemove', resize.resizeEsMoveHandler);
-  document.addEventListener('mouseup', resize.resizeEsUpHandler);
-  window.addEventListener('beforeunload', () => {
-    document.removeEventListener('mousemove', resize.resizeEsMoveHandler);
-    document.removeEventListener('mouseup', resize.resizeEsUpHandler);
-  });
   const bigFrame = document.createElement('div');
   bigFrame.classList.add('bigFrame');
   const smallFrame = document.createElement('div');

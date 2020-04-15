@@ -1,4 +1,7 @@
 /* eslint-disable no-param-reassign */
+
+import constants from '../utils/constant.js';
+
 /* eslint-disable max-len */
 const colHeaders = document.getElementsByClassName('colHeader');
 const rowHeaders = document.getElementsByClassName('rowHeader');
@@ -94,18 +97,17 @@ function portrayFrame(activeCellCoordinate, selectUpperLeftCoordinate, selectBot
 }
 
 function portrayBoundary(selectType, selectUpperLeftCoordinate, selectBottomRightCoordinate) {
-  // hiddenButtons();
   switch (selectType) {
-    case 'cell':
+    case constants.cellSelectType:
       portrayCellEvent(selectUpperLeftCoordinate, selectBottomRightCoordinate);
       break;
-    case 'rowHeader':
+    case constants.rowSelectType:
       portrayRowHeaderEvent(selectUpperLeftCoordinate, selectBottomRightCoordinate);
       break;
-    case 'colHeader':
+    case constants.colSelectType:
       portrayColHeaderEvent(selectUpperLeftCoordinate, selectBottomRightCoordinate);
       break;
-    case 'corner':
+    case constants.cornerSelectType:
       portrayCornerEvent(selectUpperLeftCoordinate, selectBottomRightCoordinate);
       break;
     default:

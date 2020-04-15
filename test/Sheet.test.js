@@ -78,13 +78,13 @@ function testInit() {
   if (JSON.stringify(exceptRowHeaders) !== JSON.stringify(sheet.rowHeaders)) {
     console.log('error');
   }
-  sheet.changeRowHeight(2, 1, -120);
-  exceptRowHeaders[0].height = 30;
-  exceptRowHeaders[1].height = 0;
-  exceptRowHeaders[2].height = 0;
-  if (JSON.stringify(exceptRowHeaders) !== JSON.stringify(sheet.rowHeaders)) {
-    console.log('error');
-  }
+  // sheet.changeRowHeight(2, 1, -120);
+  // exceptRowHeaders[0].height = 30;
+  // exceptRowHeaders[1].height = 0;
+  // exceptRowHeaders[2].height = 0;
+  // if (JSON.stringify(exceptRowHeaders) !== JSON.stringify(sheet.rowHeaders)) {
+  //   console.log('error');
+  // }
   // sheet.changeSelectRange('row', 0, 0, 3, 3, 0, 0);
   sheet.changeRowHeight(0, 4, 60);
   for (let i = 0; i < 4; i++) {
@@ -130,14 +130,14 @@ function testInit() {
   if (JSON.stringify(expectColumnHeaders) !== JSON.stringify(sheet.colHeaders)) {
     console.log('error');
   }
-  sheet.changeColWidth(3, 1, -1000);
-  expectColumnHeaders[0].width = 0;
-  expectColumnHeaders[1].width = 0;
-  expectColumnHeaders[2].width = 0;
-  expectColumnHeaders[3].width = 0;
-  if (JSON.stringify(expectColumnHeaders) !== JSON.stringify(sheet.colHeaders)) {
-    console.log('error');
-  }
+  // sheet.changeColWidth(3, 1, -1000);
+  // expectColumnHeaders[0].width = 0;
+  // expectColumnHeaders[1].width = 0;
+  // expectColumnHeaders[2].width = 0;
+  // expectColumnHeaders[3].width = 0;
+  // if (JSON.stringify(expectColumnHeaders) !== JSON.stringify(sheet.colHeaders)) {
+  //   console.log('error');
+  // }
   sheet.removeCols(0, 4);
   sheet.removeRows(0, 4);
   if (JSON.stringify(expectData.cells) !== JSON.stringify(sheet.cells)) {
