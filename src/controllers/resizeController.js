@@ -23,9 +23,15 @@ export default class Resize {
     this.table = document.getElementsByClassName('table');
     this.bigFrame = document.getElementsByClassName('bigFrame');
     this.smallFrame = document.getElementsByClassName('smallFrame');
+    this.resizeColHeaderDownHandler = this.resizeColHeaderDownHandler.bind(this);
+    this.resizeRowHeaderDownHandler = this.resizeRowHeaderDownHandler.bind(this);
+    this.resizeColHeaderUpHandler = this.resizeColHeaderUpHandler.bind(this);
+    this.resizeRowHeaderUpHandler = this.resizeRowHeaderUpHandler.bind(this);
+    this.resizeColHeaderMoveHandler = this.resizeColHeaderMoveHandler.bind(this);
+    this.resizeRowHeaderMoveHandler = this.resizeRowHeaderMoveHandler.bind(this);
   }
 
-  resizeColHeaderDownHandler = (e) => {
+  resizeColHeaderDownHandler(e) {
     document.addEventListener('mousemove', this.resizeColHeaderMoveHandler);
     document.addEventListener('mouseup', this.resizeColHeaderUpHandler);
     this.bigFrame[0].style.visibility = 'hidden';
@@ -45,7 +51,7 @@ export default class Resize {
     }
   }
 
-  resizeRowHeaderDownHandler = (e) => {
+  resizeRowHeaderDownHandler(e) {
     document.addEventListener('mousemove', this.resizeRowHeaderMoveHandler);
     document.addEventListener('mouseup', this.resizeRowHeaderUpHandler);
     this.bigFrame[0].style.visibility = 'hidden';
@@ -66,7 +72,7 @@ export default class Resize {
     }
   }
 
-  resizeColHeaderUpHandler = (e) => {
+  resizeColHeaderUpHandler(e) {
     document.removeEventListener('mousemove', this.resizeColHeaderMoveHandler);
     document.removeEventListener('mouseup', this.resizeColHeaderUpHandler);
     if (this.isColMultipleChoice) {
@@ -92,7 +98,7 @@ export default class Resize {
       sheet.selectRange.selectBottomRightCoordinate, sheet.activeCellCoordinate);
   }
 
-  resizeRowHeaderUpHandler = (e) => {
+  resizeRowHeaderUpHandler(e) {
     document.removeEventListener('mousemove', this.resizeRowHeaderMoveHandler);
     document.removeEventListener('mouseup', this.resizeRowHeaderUpHandler);
     if (this.isRowMultipleChoice) {
@@ -118,7 +124,7 @@ export default class Resize {
       sheet.selectRange.selectBottomRightCoordinate, sheet.activeCellCoordinate);
   }
 
-  resizeColHeaderMoveHandler = (e) => {
+  resizeColHeaderMoveHandler(e) {
     if (this.isStartResizeColHeader) {
       const indexBoundary = this.isColMultipleChoice ? sheet.selectRange.selectUpperLeftCoordinate.colIndex : 0;
       this.moveClientX = e.clientX;
@@ -145,7 +151,7 @@ export default class Resize {
     }
   }
 
-  resizeRowHeaderMoveHandler = (e) => {
+  resizeRowHeaderMoveHandler(e) {
     if (this.isStartResizeRowHeader) {
       const indexBoundary = this.isRowMultipleChoice ? sheet.selectRange.selectUpperLeftCoordinate.rowIndex : 0;
       this.moveClientY = e.clientY;
